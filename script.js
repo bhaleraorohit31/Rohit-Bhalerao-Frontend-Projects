@@ -1,109 +1,79 @@
-console.log("Welcome to Spotify");
+var datbtn = document.getElementById("button");
+datdiv = document.getElementById("div");
+theDate = new Date();
+month = theDate.getMonth();
+day = theDate.getDate();
+year = theDate.getFullYear();
+span = document.querySelectorAll("span");
 
-// Initialize the Variables
-let songIndex = 0;
-let audioElement = new Audio('songs/1.mp3');
-let masterPlay = document.getElementById('masterPlay');
-let myProgressBar = document.getElementById('myProgressBar');
-let gif = document.getElementById('gif');
-let masterSongName = document.getElementById('masterSongName');
-let songItems = Array.from(document.getElementsByClassName('songItem'));
 
-let songs = [
-    {songName: "Warriyo - Mortals [NCS Release]", filePath: "songs/1.mp3", coverPath: "covers/1.jpg"},
-    {songName: "Cielo - Huma-Huma", filePath: "songs/2.mp3", coverPath: "covers/2.jpg"},
-    {songName: "DEAF KEV - Invincible [NCS Release]-320k", filePath: "songs/3.mp3", coverPath: "covers/3.jpg"},
-    {songName: "Different Heaven & EH!DE - My Heart [NCS Release]", filePath: "songs/4.mp3", coverPath: "covers/4.jpg"},
-    {songName: "Janji-Heroes-Tonight-feat-Johnning-NCS-Release", filePath: "songs/5.mp3", coverPath: "covers/5.jpg"},
-    {songName: "Rabba - Salam-e-Ishq", filePath: "songs/2.mp3", coverPath: "covers/6.jpg"},
-    {songName: "Sakhiyaan - Salam-e-Ishq", filePath: "songs/2.mp3", coverPath: "covers/7.jpg"},
-    {songName: "Bhula Dena - Salam-e-Ishq", filePath: "songs/2.mp3", coverPath: "covers/8.jpg"},
-    {songName: "Tumhari Kasam - Salam-e-Ishq", filePath: "songs/2.mp3", coverPath: "covers/9.jpg"},
-    {songName: "Na Jaana - Salam-e-Ishq", filePath: "songs/4.mp3", coverPath: "covers/10.jpg"},
-]
 
-songItems.forEach((element, i)=>{ 
-    element.getElementsByTagName("img")[0].src = songs[i].coverPath; 
-    element.getElementsByClassName("songName")[0].innerText = songs[i].songName; 
-})
- 
 
-// Handle play/pause click
-masterPlay.addEventListener('click', ()=>{
-    if(audioElement.paused || audioElement.currentTime<=0){
-        audioElement.play();
-        masterPlay.classList.remove('fa-play-circle');
-        masterPlay.classList.add('fa-pause-circle');
-        gif.style.opacity = 1;
+function calc(){
+    var date = new Date();
+    hours = date.getHours();
+    minutes = date.getMinutes();
+    seconds = date.getSeconds();
+
+    var dat  = window.input.value
+    arr = dat.split("-")
+    arr0 = eval(arr[2]);
+    arr1 = eval(arr[1]);
+    arr2 = eval(arr[0]);
+
+    userday = 30 + day - arr0;
+    usermonth = 12 + month - arr1;
+    useryear = year -1 - arr2;
+
+    if(arr[1]==null){
+        span.textContent.display = "none";
     }
-    else{
-        audioElement.pause();
-        masterPlay.classList.remove('fa-pause-circle');
-        masterPlay.classList.add('fa-play-circle');
-        gif.style.opacity = 0;
-    }
-})
-// Listen to Events
-audioElement.addEventListener('timeupdate', ()=>{ 
-    // Update Seekbar
-    progress = parseInt((audioElement.currentTime/audioElement.duration)* 100); 
-    myProgressBar.value = progress;
-})
+    if(userday>= 30){
+        userday = 0+ userday % 30;
+        usermonth = usermonth + 1;
+        }else{
+            userday = userday;
+            usermonth = usermonth;
+        }
 
-myProgressBar.addEventListener('change', ()=>{
-    audioElement.currentTime = myProgressBar.value * audioElement.duration/100;
-})
+        if(usermonth >= 12){
+            usermonth = usermonth % 12;
+            useryear = useryear + 1;
 
-const makeAllPlays = ()=>{
-    Array.from(document.getElementsByClassName('songItemPlay')).forEach((element)=>{
-        element.classList.remove('fa-pause-circle');
-        element.classList.add('fa-play-circle');
-    })
+        }else{
+            usermonth = usermonth;
+            useryear = useryear;
+        }
+
+        if(hours < 10){
+            hours = "0" + hours
+        }
+        if(minutes < 10){
+            hours = "0" + minutes;
+        }
+        if(seconds < 10){
+            hours = "0" + seconds
+        }
+        if(userday < 10){
+            hours = "0" + userday
+        }
+        if(usermonth < 10){
+            hours = "0" + usermonth
+        }
+        if(useryear < 10){
+            hours = "0" + useryear
+        }
+
+        span[0].textContent = useryear;
+        span[1].textContent = usermonth;
+        span[2].textContent = userday;
+        span[3].textContent = hours;
+        span[4].textContent = minutes;
+        span[5].textContent = seconds;
+
+        setInterval(calc, 1000);
+        
+
+
+
 }
-
-Array.from(document.getElementsByClassName('songItemPlay')).forEach((element)=>{
-    element.addEventListener('click', (e)=>{ 
-        makeAllPlays();
-        songIndex = parseInt(e.target.id);
-        e.target.classList.remove('fa-play-circle');
-        e.target.classList.add('fa-pause-circle');
-        audioElement.src = `songs/${songIndex+1}.mp3`;
-        masterSongName.innerText = songs[songIndex].songName;
-        audioElement.currentTime = 0;
-        audioElement.play();
-        gif.style.opacity = 1;
-        masterPlay.classList.remove('fa-play-circle');
-        masterPlay.classList.add('fa-pause-circle');
-    })
-})
-
-document.getElementById('next').addEventListener('click', ()=>{
-    if(songIndex>=9){
-        songIndex = 0
-    }
-    else{
-        songIndex += 1;
-    }
-    audioElement.src = `songs/${songIndex+1}.mp3`;
-    masterSongName.innerText = songs[songIndex].songName;
-    audioElement.currentTime = 0;
-    audioElement.play();
-    masterPlay.classList.remove('fa-play-circle');
-    masterPlay.classList.add('fa-pause-circle');
-
-})
-
-document.getElementById('previous').addEventListener('click', ()=>{
-    if(songIndex<=0){
-        songIndex = 0
-    }
-    else{
-        songIndex -= 1;
-    }
-    audioElement.src = `songs/${songIndex+1}.mp3`;
-    masterSongName.innerText = songs[songIndex].songName;
-    audioElement.currentTime = 0;
-    audioElement.play();
-    masterPlay.classList.remove('fa-play-circle');
-    masterPlay.classList.add('fa-pause-circle');
-})
