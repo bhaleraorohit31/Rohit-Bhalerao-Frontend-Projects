@@ -1,79 +1,42 @@
-var datbtn = document.getElementById("button");
-datdiv = document.getElementById("div");
-theDate = new Date();
-month = theDate.getMonth();
-day = theDate.getDate();
-year = theDate.getFullYear();
-span = document.querySelectorAll("span");
+const inputBox = document.getElementById("input-box");
+const listContainer = document.getElementById("list-container");
 
-
-
-
-function calc(){
-    var date = new Date();
-    hours = date.getHours();
-    minutes = date.getMinutes();
-    seconds = date.getSeconds();
-
-    var dat  = window.input.value
-    arr = dat.split("-")
-    arr0 = eval(arr[2]);
-    arr1 = eval(arr[1]);
-    arr2 = eval(arr[0]);
-
-    userday = 30 + day - arr0;
-    usermonth = 12 + month - arr1;
-    useryear = year -1 - arr2;
-
-    if(arr[1]==null){
-        span.textContent.display = "none";
-    }
-    if(userday>= 30){
-        userday = 0+ userday % 30;
-        usermonth = usermonth + 1;
-        }else{
-            userday = userday;
-            usermonth = usermonth;
-        }
-
-        if(usermonth >= 12){
-            usermonth = usermonth % 12;
-            useryear = useryear + 1;
-
-        }else{
-            usermonth = usermonth;
-            useryear = useryear;
-        }
-
-        if(hours < 10){
-            hours = "0" + hours
-        }
-        if(minutes < 10){
-            hours = "0" + minutes;
-        }
-        if(seconds < 10){
-            hours = "0" + seconds
-        }
-        if(userday < 10){
-            hours = "0" + userday
-        }
-        if(usermonth < 10){
-            hours = "0" + usermonth
-        }
-        if(useryear < 10){
-            hours = "0" + useryear
-        }
-
-        span[0].textContent = useryear;
-        span[1].textContent = usermonth;
-        span[2].textContent = userday;
-        span[3].textContent = hours;
-        span[4].textContent = minutes;
-        span[5].textContent = seconds;
-
-        setInterval(calc, 1000);
-        
-
-
-
+function addTask() {
+  if (inputBox.value === "") {
+    alert("You must write something!");
+  } else {
+    let li = document.createElement("li");
+    li.innerHTML = inputBox.value;
+    listContainer.appendChild(li);
+    let span = document.createElement("span");
+    span.innerHTML = "\u00d7";
+    // u00d7 is code for x sign
+    li.appendChild(span);
+  }
+  inputBox.value = "";
+  saveData();
 }
+
+listContainer.addEventListener(
+  "click",
+  function (e) {
+    if(e.target.tagName === "LI"){
+      e.target.classList.toggle("checked");
+      saveData();
+    }
+     else if(e.target.tagName === "SPAN"){
+      e.target.parentElement.remove();
+      saveData();
+    }
+  },false);
+
+  function saveData(){
+    localStorage.setItem("data", listContainer.innerHTML);
+    
+}
+
+function showTask(){
+    listContainer.innerHTML = localStorage.getItem("data");
+}
+
+showTask();
